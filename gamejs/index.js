@@ -20,7 +20,7 @@ async function getWord() {
     let winner = data[0]['winner']
 
     if (error == null) {
-        console.log(`Retrieved word: ${word}`);
+        console.log("Retrieved data");
         return [word, id, winner];
     } else {
         console.log(error);
@@ -42,12 +42,13 @@ async function postWinner(winner, id) {
     }
 }
 
-functions.http('gameHandler', (req, res) => {
+functions.http('gameHandler', async (req, res) => {
     let g = req.query.word;
     let p = req.query.player;
-    let wordandid = getWord();
+    let wordandid = await getWord();
 
-    console.log(wordandid);
+    console.log(`Word pulled from url: ${g}`);
+    console.log(`function returned: ${wordandid}`)
 
     if (g === undefined) {
         res.send("This is a test mode.")

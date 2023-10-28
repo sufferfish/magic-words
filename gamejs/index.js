@@ -31,10 +31,11 @@ async function postWinner(winner, id) {
     const supabase = supa.createClient(process.env.api, process.env.cKey);
     const { error } = await supabase
     .from('gamewords')
-    .update({is_guessed: 'true', winner: winner})
-    .eq('id', id)
+    .update({
+        is_guessed: true, 
+        winner: winner})
+    .eq('id', id);
 
-    // TODO: handle the errors
     if (error != null) {
         console.log(`Failed to post winner for id: ${id}`);
     } else {
@@ -43,19 +44,19 @@ async function postWinner(winner, id) {
 }
 
 functions.http('gameHandler', async (req, res) => {
-    let g = req.query.word;
-    let p = req.query.player;
-    let wordandid = await getWord();
+    let guess = req.query.word;
+    let player = req.query.player;
+    let [word, id, winner] = await getWord();
 
-    console.log(`Word pulled from url: ${g}`);
-    console.log(`function returned: ${wordandid}`)
+    console.log(`Word pulled from url: ${guess}`);
+    console.log(`Player pulled from url: ${player}`);
 
-    if (g === undefined) {
+    if (guess === undefined) {
         res.send("This is a test mode.")
-    } else if (g != undefined && g.toLowerCase() === wordandid[0]) {
-        postWinner(p, wordandid[1])
-        res.send(`You guessed the word ${p}! It was ${g}.`);
+    } else if (guess != undefined && guess.toLowerCase() === word) {
+        postWinner(player, id)
+        res.send(`You guessed the word ${player}! It was ${guess}.`);
     } else {
-        res.send(`Sorry ${p}, the word ${g} is not correct.`)
+        res.send(`Sorry ${player}, the word ${guess} is not correct.`)
     }
 });

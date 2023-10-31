@@ -28,7 +28,8 @@ async function getWord() {
 }
 
 async function postWinner(winner, id) {
-    const supabase = supa.createClient(process.env.api, process.env.cKey);
+    const supabase = supa.createClient(process.env.api, process.env.service);
+    console.log(`Attempting to update with winner as ${winner} and id as ${id}.`)
     const { error } = await supabase
     .from('gamewords')
     .update({
@@ -38,6 +39,7 @@ async function postWinner(winner, id) {
 
     if (error != null) {
         console.log(`Failed to post winner for id: ${id}`);
+        console.log(error)
     } else {
         console.log(`Succeeded in posting winner for id: ${id}`);
     }
@@ -53,7 +55,10 @@ functions.http('gameHandler', async (req, res) => {
 
     if (guess === undefined) {
         res.send("This is a test mode.")
-    } else if (guess != undefined && guess.toLowerCase() === word) {
+    } else if (word === null && id === null && winner === null) {
+        res.send(`Sorry ${player} but ${winner} has already guessed the word of the day.`)
+    } else if (guess !== undefined && guess.toLowerCase() === word) {
+        console.log("Updating database...");
         postWinner(player, id)
         res.send(`You guessed the word ${player}! It was ${guess}.`);
     } else {

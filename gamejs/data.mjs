@@ -10,16 +10,12 @@ const supabase = createClient(process.env.api, process.env.service)
 
 const { data, error } = await supabase
     .from('gamewords')
-    .update({
-        is_guessed: true,
-        winner: "sufferinfish"
-    })
-    .eq('id', 3)
+    .select(`count`)
+    .eq('word', 'goboingo');
 
 // let info = data[0];
 if (error == null) {
-    console.log('Successfully posted.');
-    console.log(data);
+    console.log(data[0].count);
 } else {
     console.log(error);
 }

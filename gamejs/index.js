@@ -13,6 +13,7 @@ async function getWord() {
     .from('gamewords')
     .select('id, word, winner')
     .eq('is_guessed', 'false')
+    .eq('active', 'true')
     .order('created_at', { ascending: true });
 
     let word = data[0]['word']
@@ -21,6 +22,7 @@ async function getWord() {
 
     if (error == null) {
         console.log("Retrieved data");
+        console.log(`Returning: ${id} | ${word} | ${winner}`);
         return [word, id, winner];
     } else {
         console.log(error);

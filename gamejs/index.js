@@ -54,7 +54,7 @@ functions.http('gameHandler', async (req, res) => {
     console.log(`Player pulled from url: ${player}`);
 
     if (guess === undefined) {
-        res.send("This is a test mode.")
+        res.send('Guess the secret word by using !guess followed by the word you want to submit. Ex: !guess Trevor');
     } else if (word === null && id === null && winner === null) {
         res.send(`Sorry ${player} but ${winner} has already guessed the word of the day.`)
     } else if (guess !== undefined && guess.toLowerCase() === word) {
